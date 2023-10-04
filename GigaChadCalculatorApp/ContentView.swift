@@ -19,6 +19,11 @@ struct ContentView: View {
         }
     }
     func NumberPressed(number: String) {
+        if currentOperation != "" {
+            currentNumber = ""
+            
+        }
+        
         if number == "." && currentNumber.contains(".") {
             return
         }
@@ -29,20 +34,38 @@ struct ContentView: View {
         }
         
     }
+    func ConvertNumberSign () {
+        if currentNumber != "" {
+            if currentNumber.contains("-") {
+                currentNumber.remove(at: currentNumber.startIndex)
+            } else {
+                currentNumber = "-" + currentNumber
+            }
+        }
+    }
     func OperationPressed(operation: String) {
+        // if operation pressed is % then do the operation and return
+        if operation == "%" {
+            if currentNumber != "" {
+                currentNumber = "\(Double(currentNumber)! / 100)"
+      
+            }
+            
+        }
+        
         currentOperation = operation
         if result != nil {
             numberStack = []
             operationStack = []
             numberStack.append(result!)
             operationStack.append(currentOperation)
-            currentNumber = ""
+            
             result = nil
         }
         if currentNumber != "" {
             numberStack.append(Double(currentNumber) ?? 0)
             operationStack.append(currentOperation)
-            currentNumber = ""
+            
         }
     }
     func Calculate() {
@@ -67,8 +90,8 @@ struct ContentView: View {
         Reset()
     }
     func Reset() {
-        currentNumber = ""
         currentOperation = ""
+        currentNumber = ""
     }
     func ResetAll() {
         Reset()
@@ -85,127 +108,131 @@ struct ContentView: View {
     )
     var body: some View {
         ScrollView {
-            VStack (alignment:.trailing, spacing: 20){
-                //                Text("GigaChad Calculator")
-                //                    .font(.title)
-                //                    .fontWeight(.bold)
-                //                    .padding()
-                //
-                Text(
-                    result != nil ?
-                    
-                    "\(result!)"
-                    
-                    : currentNumber != "" ? currentNumber : "0"
-                    
-                )
-                .font(.system(size:40))
-                
-                .fontWeight(.bold)
-                .padding()
-                Divider()
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
-                    Button(action: {
-                        ResetAll()
-                    }) {
-                        Text("AC")
-                            .font(.title)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(width: 80, height: 70)
-                            .background(Color.red)
-                            .cornerRadius(60)
-                    }
-                    Button(action: {
-                        Reset()
-                    }) {
-                        Text("C")
-                            .font(.title)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(width: 80, height: 70)
-                            .background(Color.red)
-                            .cornerRadius(60)
-                    }
-                    Button(action: {
-                        DeleteOne()
-                    }) {
-                        Text(
-                            
-                            Image(systemName: "delete.left"))
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .frame(width: 80, height: 70)
-                        .background(Color.red)
-                        .cornerRadius(60)
-                    }
-                    ForEach([1,2,3,4,5,6,7,8,9,0], id: \.self) { i in
-                        Button(action: {
-                            NumberPressed(number: "\(i)")
-                        }) {
-                            Text("\(i)")
-                                .font(.title)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .frame(width: 80, height: 70)
-                                .background(Color.gray)
-                                .cornerRadius(60)
-                        }
+            HStack {
+                VStack (alignment: .trailing, spacing: 20){
+                    Text(
+                        result != nil ?
                         
+                        "\(result!)"
                         
-                    }
-                    
-                    ForEach(["X", "÷", "+", "-"], id: \.self) { i in
-                        Button(action: {
-                            OperationPressed(operation: i)
-                        }) {
-                            Text("\(i)")
-                                .font(.title)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .frame(width: 80, height: 70)
-                                .background(i == currentOperation ? Color.green : Color.blue)
-                                .cornerRadius(60)
-                        }
-                    }
-                    Button(action: {
-                        NumberPressed(number: ".")
-                    }) {
-                        Text(",")
-                            .font(.title)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(width: 80, height: 70)
-                            .background(Color.blue)
-                            .cornerRadius(60)
-                    }
-                    
-                }
-                Button(action: {
-                    Calculate()
-                }) {
-                    Text("=")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 70)
-                        .background(Color.blue)
-                        .cornerRadius(60)
-                    
-                    
-                }
-                .padding(
-                    EdgeInsets(
-                        top: 0,
-                        leading: 20,
-                        bottom: 0,
-                        trailing: 20
+                        : currentNumber != "" ? currentNumber : "0"
+                        
                     )
-                )
-                
+                    .font(.system(size:90))
+                    
+                    .fontWeight(.light)
+                    .padding()
+                    
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
+                        Button(action: {
+                            ResetAll()
+                        }) {
+                            Text("AC")
+                                .font(.title)
+                            
+                                .foregroundColor(.white)
+                                .frame(width: 70, height: 70)
+                                .background(Color(UIColor.lightGray))
+                                .cornerRadius(100)
+                        }
+                        Button(action: {
+                            Reset()
+                        }) {
+                            Text("C")
+                                .font(.title)
+                            
+                                .foregroundColor(.white)
+                                .frame(width: 70, height: 70)
+                                .background(Color(UIColor.lightGray))
+                                .cornerRadius(60)
+                        }
+                        Button(action: {
+                            DeleteOne()
+                        }) {
+                            Text(
+                                
+                                Image(systemName: "delete.left"))
+                            .font(.title)
+                            
+                            .foregroundColor(.white)
+                            .frame(width: 70, height: 70)
+                            .background(Color(UIColor.lightGray))
+                            .cornerRadius(60)
+                        }
+                        ForEach([1,2,3,4,5,6,7,8,9,0], id: \.self) { i in
+                            Button(action: {
+                                NumberPressed(number: "\(i)")
+                            }) {
+                                Text("\(i)")
+                                    .font(.title)
+                                
+                                    .foregroundColor(.white)
+                                    .frame(width: 70, height: 70)
+                                    .background(Color(UIColor.darkGray))
+                                    .cornerRadius(60)
+                            }
+                            
+                            
+                        }
+                        
+                        ForEach(["X", "÷", "+", "-", "%"], id: \.self) { i in
+                            Button(action: {
+                                OperationPressed(operation: i)
+                            }) {
+                                Text("\(i)")
+                                    .font(.title)
+                                
+                                    .foregroundColor(.white)
+                                    .frame(width: 70, height: 70)
+                                    .background(i == currentOperation ? Color.orange : Color.blue)
+                                    .cornerRadius(60)
+                            }
+                        }
+                        
+                        Button(action: {
+                            NumberPressed(number: ".")
+                        }) {
+                            Text(",")
+                                .font(.title)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                                .frame(width: 70, height: 70)
+                                .background(Color.blue)
+                                .cornerRadius(60)
+                        }
+                        Button(action: {
+                            ConvertNumberSign()
+                        }) {
+                            Text("+/-")
+                                .font(.title)
+                            
+                                .foregroundColor(.white)
+                                .frame(width: 70, height: 70)
+                                .background(Color.blue)
+                                .cornerRadius(60)
+                        }
+                        Button(action: {
+                            Calculate()
+                        }) {
+                            Text("=")
+                                .font(.title)
+                            
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(width: 70, height: 70)
+                                .background(Color.orange)
+                                .cornerRadius(60)
+                            
+                            
+                        }
+                        
+                        
+                    }.padding()
+                    
+                    
+                }
             }
+            
         }
     }
 }
