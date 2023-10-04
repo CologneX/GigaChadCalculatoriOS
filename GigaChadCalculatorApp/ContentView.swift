@@ -44,11 +44,14 @@ struct ContentView: View {
         }
     }
     func OperationPressed(operation: String) {
-        // if operation pressed is % then do the operation and return
+        // if there is no current number return
+        if currentNumber == "" {
+            return
+        }
         if operation == "%" {
             if currentNumber != "" {
                 currentNumber = "\(Double(currentNumber)! / 100)"
-      
+                
             }
             
         }
@@ -73,16 +76,16 @@ struct ContentView: View {
         var tempResult = numberStack[0]
         for i in 0..<operationStack.count {
             switch operationStack[i] {
-            case "+":
+            case "plus":
                 tempResult += numberStack[i+1]
-            case "-":
+            case "minus":
                 tempResult -= numberStack[i+1]
-            case "X":
+            case "multiply":
                 tempResult *= numberStack[i+1]
-            case "÷":
+            case "divide":
                 tempResult /= numberStack[i+1]
             default:
-                print("Error")
+                return
             }
         }
         
@@ -108,12 +111,14 @@ struct ContentView: View {
     )
     var body: some View {
         ScrollView {
-            HStack {
+            HStack(alignment: .bottom){
                 VStack (alignment: .trailing, spacing: 20){
                     Text(
                         result != nil ?
-                        
-                        "\(result!)"
+                        // format the result to be interger (without decimal) if possible
+                        result!.truncatingRemainder(dividingBy: 1) == 0 ?
+                        "\(Int(result!))" :
+                            "\(result!)"
                         
                         : currentNumber != "" ? currentNumber : "0"
                         
@@ -124,12 +129,12 @@ struct ContentView: View {
                     .padding()
                     
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
+                        
                         Button(action: {
                             ResetAll()
                         }) {
                             Text("AC")
                                 .font(.title)
-                            
                                 .foregroundColor(.white)
                                 .frame(width: 70, height: 70)
                                 .background(Color(UIColor.lightGray))
@@ -159,6 +164,21 @@ struct ContentView: View {
                             .background(Color(UIColor.lightGray))
                             .cornerRadius(60)
                         }
+                        Button(action: {
+                            Calculate()
+                        }) {
+                            Text("=")
+                                .font(.title)
+                            
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(width: 70, height: 70)
+                                .background(Color.orange)
+                                .cornerRadius(60)
+                            
+                            
+                        }
+                        
                         ForEach([1,2,3,4,5,6,7,8,9,0], id: \.self) { i in
                             Button(action: {
                                 NumberPressed(number: "\(i)")
@@ -175,17 +195,20 @@ struct ContentView: View {
                             
                         }
                         
-                        ForEach(["X", "÷", "+", "-", "%"], id: \.self) { i in
+                        ForEach(["multiply","minus","plus", "divide","percent"], id: \.self) { i in
                             Button(action: {
                                 OperationPressed(operation: i)
                             }) {
-                                Text("\(i)")
-                                    .font(.title)
+                                Text(
+                                    Image(systemName:
+                                            i)
+                                )
+                                .font(.title)
                                 
-                                    .foregroundColor(.white)
-                                    .frame(width: 70, height: 70)
-                                    .background(i == currentOperation ? Color.orange : Color.blue)
-                                    .cornerRadius(60)
+                                .foregroundColor(.white)
+                                .frame(width: 70, height: 70)
+                                .background(i == currentOperation ? Color.orange : Color.blue)
+                                .cornerRadius(60)
                             }
                         }
                         
@@ -210,20 +233,6 @@ struct ContentView: View {
                                 .frame(width: 70, height: 70)
                                 .background(Color.blue)
                                 .cornerRadius(60)
-                        }
-                        Button(action: {
-                            Calculate()
-                        }) {
-                            Text("=")
-                                .font(.title)
-                            
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(width: 70, height: 70)
-                                .background(Color.orange)
-                                .cornerRadius(60)
-                            
-                            
                         }
                         
                         
