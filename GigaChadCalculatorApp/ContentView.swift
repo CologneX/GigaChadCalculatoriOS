@@ -96,6 +96,7 @@ struct ContentView: View {
         case "AC":
             currentInput = "0"
             currentOperator = nil
+            displayedNumber = nil
             numbers.removeAll()
             operators.removeAll()
         case "C":
@@ -119,9 +120,19 @@ struct ContentView: View {
                 currentOperator = button
             }
         case "%":
-            if currentInput != "Error" {
-                currentInput = "\(Double(currentInput)! / 100)"
+            if  currentInput != "Error"{
+                let decimalPercentage = Double(currentInput)! / 100
+                if !numbers.isEmpty {
+                    let lastNumber = numbers.last!
+                    let result = lastNumber * decimalPercentage
+                    currentInput = result.truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(result))" : "\(result)"
+                }  else {
+                    
+                    currentInput = decimalPercentage.truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(decimalPercentage))" : "\(decimalPercentage)"
+                }
+                
             }
+            
         case "=":
             if currentInput != "Error" && currentOperator != nil {
                 numbers.append(Double(currentInput) ?? 0)
@@ -138,6 +149,10 @@ struct ContentView: View {
                 } else {
                     currentInput = "-" + currentInput
                 }
+            }
+        case ".":
+            if currentInput != "Error" && !currentInput.contains(".") {
+                currentInput += "."
             }
         default:
             if currentInput == "0" || currentInput == "Error" {
