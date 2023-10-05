@@ -100,13 +100,14 @@ struct ContentView: View {
             operators.removeAll()
         case "C":
             currentInput = "0"
+            displayedNumber = nil
         case "⌫":
             if currentInput.count > 1 {
                 currentInput.removeLast()
             } else {
                 currentInput = "0"
             }
-        case "+", "-", "×", "÷", "%":
+        case "+", "-", "×", "÷":
             if currentInput == "0" && numbers.isEmpty {
                 return
             }
@@ -116,6 +117,10 @@ struct ContentView: View {
                 displayedNumber = currentInput
                 currentInput = "0"
                 currentOperator = button
+            }
+        case "%":
+            if currentInput != "Error" {
+                currentInput = "\(Double(currentInput)! / 100)"
             }
         case "=":
             if currentInput != "Error" && currentOperator != nil {
