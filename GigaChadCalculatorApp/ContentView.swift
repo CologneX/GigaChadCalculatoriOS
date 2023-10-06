@@ -21,14 +21,13 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            
             VStack(alignment: .trailing, spacing: 20){
+               Spacer()
                 Text(
                     (displayedNumber != nil && currentInput == "0") ? displayedNumber! : currentInput
                 )
                 .font(.system(size:90))
-                .padding()
-                
+                .fontWeight(.light)
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
                     Button(action: {
                         handleButtonTap(clearButtonLabel)
@@ -77,8 +76,8 @@ struct ContentView: View {
                                 .cornerRadius(60)
                         }
                     }
-                }.padding()
-            }
+                }
+            }.padding()
             
         }
     }
